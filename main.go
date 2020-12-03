@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/kprav33n/aoc20/day01"
+	"github.com/kprav33n/aoc20/day02"
 )
 
 func day01a() {
@@ -32,6 +33,28 @@ func day01b() {
 
 }
 
+func day02a() {
+	data, err := ioutil.ReadFile("input/day02.txt")
+	if err != nil {
+		panic(err)
+	}
+
+	entries := day02.ParseLines(string(data))
+	count := day02.Count(day02.IsValid, entries)
+	fmt.Println(count)
+}
+
+func day02b() {
+	data, err := ioutil.ReadFile("input/day02.txt")
+	if err != nil {
+		panic(err)
+	}
+
+	entries := day02.ParseLines(string(data))
+	count := day02.Count(day02.IsValid2, entries)
+	fmt.Println(count)
+}
+
 func main() {
 	if len(os.Args) != 2 {
 		fmt.Fprintf(os.Stderr, "Usage: %s <dayNNx>\n", os.Args[0])
@@ -44,5 +67,11 @@ func main() {
 
 	case "day01b":
 		day01b()
+
+	case "day02a":
+		day02a()
+
+	case "day02b":
+		day02b()
 	}
 }
