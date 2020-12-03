@@ -7,6 +7,7 @@ import (
 
 	"github.com/kprav33n/aoc20/day01"
 	"github.com/kprav33n/aoc20/day02"
+	"github.com/kprav33n/aoc20/day03"
 )
 
 func day01a() {
@@ -55,6 +56,40 @@ func day02b() {
 	fmt.Println(count)
 }
 
+func day03a() {
+	data, err := ioutil.ReadFile("input/day03.txt")
+	if err != nil {
+		panic(err)
+	}
+
+	m, err := day03.ParseMap(string(data))
+	if err != nil {
+		panic(err)
+	}
+
+	count := day03.CountTrees(day03.Slope{3, 1}, m)
+	fmt.Println(count)
+}
+
+func day03b() {
+	data, err := ioutil.ReadFile("input/day03.txt")
+	if err != nil {
+		panic(err)
+	}
+
+	m, err := day03.ParseMap(string(data))
+	if err != nil {
+		panic(err)
+	}
+
+	count := day03.CountTrees(day03.Slope{1, 1}, m) *
+		day03.CountTrees(day03.Slope{3, 1}, m) *
+		day03.CountTrees(day03.Slope{5, 1}, m) *
+		day03.CountTrees(day03.Slope{7, 1}, m) *
+		day03.CountTrees(day03.Slope{1, 2}, m)
+	fmt.Println(count)
+}
+
 func main() {
 	if len(os.Args) != 2 {
 		fmt.Fprintf(os.Stderr, "Usage: %s <dayNNx>\n", os.Args[0])
@@ -73,5 +108,11 @@ func main() {
 
 	case "day02b":
 		day02b()
+
+	case "day03a":
+		day03a()
+
+	case "day03b":
+		day03b()
 	}
 }
