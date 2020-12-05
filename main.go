@@ -8,6 +8,7 @@ import (
 	"github.com/kprav33n/aoc20/day01"
 	"github.com/kprav33n/aoc20/day02"
 	"github.com/kprav33n/aoc20/day03"
+	"github.com/kprav33n/aoc20/day04"
 )
 
 func day01a() {
@@ -90,6 +91,21 @@ func day03b() {
 	fmt.Println(count)
 }
 
+func day04a() {
+	data, err := ioutil.ReadFile("input/day04.txt")
+	if err != nil {
+		panic(err)
+	}
+
+	passports, err := day04.ParsePassports(string(data))
+	if err != nil {
+		panic(err)
+	}
+
+	count := day04.CountValid(passports)
+	fmt.Println(count)
+}
+
 func main() {
 	if len(os.Args) != 2 {
 		fmt.Fprintf(os.Stderr, "Usage: %s <dayNNx>\n", os.Args[0])
@@ -114,5 +130,8 @@ func main() {
 
 	case "day03b":
 		day03b()
+
+	case "day04a":
+		day04a()
 	}
 }
