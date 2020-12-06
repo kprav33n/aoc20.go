@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
 
 	"github.com/kprav33n/aoc20/day01"
 	"github.com/kprav33n/aoc20/day02"
 	"github.com/kprav33n/aoc20/day03"
 	"github.com/kprav33n/aoc20/day04"
+	"github.com/kprav33n/aoc20/day05"
 )
 
 func day01a() {
@@ -106,6 +108,25 @@ func day04a() {
 	fmt.Println(count)
 }
 
+func day05a() {
+	data, err := ioutil.ReadFile("input/day05.txt")
+	if err != nil {
+		panic(err)
+	}
+
+	passes := strings.Split(strings.Trim(string(data), "\n"), "\n")
+	ids := day05.ParsePasses(passes)
+
+	max := 0
+	for _, i := range ids {
+		if i > max {
+			max = i
+		}
+	}
+
+	fmt.Println(max)
+}
+
 func main() {
 	if len(os.Args) != 2 {
 		fmt.Fprintf(os.Stderr, "Usage: %s <dayNNx>\n", os.Args[0])
@@ -133,5 +154,8 @@ func main() {
 
 	case "day04a":
 		day04a()
+
+	case "day05a":
+		day05a()
 	}
 }
