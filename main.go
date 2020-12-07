@@ -11,6 +11,7 @@ import (
 	"github.com/kprav33n/aoc20/day03"
 	"github.com/kprav33n/aoc20/day04"
 	"github.com/kprav33n/aoc20/day05"
+	"github.com/kprav33n/aoc20/day06"
 )
 
 func day01a() {
@@ -127,6 +128,23 @@ func day05a() {
 	fmt.Println(max)
 }
 
+func day06a() {
+	data, err := ioutil.ReadFile("input/day06.txt")
+	if err != nil {
+		panic(err)
+	}
+
+	groups := strings.Split(strings.Trim(string(data), "\n"), "\n\n")
+	counts := day06.ParseAnswers(groups)
+
+	sum := 0
+	for _, c := range counts {
+		sum += c
+	}
+
+	fmt.Println(sum)
+}
+
 func main() {
 	if len(os.Args) != 2 {
 		fmt.Fprintf(os.Stderr, "Usage: %s <dayNNx>\n", os.Args[0])
@@ -157,5 +175,8 @@ func main() {
 
 	case "day05a":
 		day05a()
+
+	case "day06a":
+		day06a()
 	}
 }
