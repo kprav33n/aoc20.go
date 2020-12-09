@@ -12,30 +12,28 @@ import (
 	"github.com/kprav33n/aoc20/day04"
 	"github.com/kprav33n/aoc20/day05"
 	"github.com/kprav33n/aoc20/day06"
+	"github.com/kprav33n/aoc20/functools"
 )
 
+func day01f(product interface{}) {
+	functools.Compose(
+		ioutil.ReadFile,
+		functools.Unwrap,
+		func(b []byte) string {
+			return string(b)
+		},
+		day01.ParseIntLines,
+		product,
+		fmt.Println,
+	)("input/day01.txt")
+}
+
 func day01a() {
-	data, err := ioutil.ReadFile("input/day01.txt")
-	if err != nil {
-		panic(err)
-	}
-
-	values := day01.ParseIntLines(string(data))
-	product := day01.ERProduct(values)
-	fmt.Println(product)
-
+	day01f(day01.ERProduct)
 }
 
 func day01b() {
-	data, err := ioutil.ReadFile("input/day01.txt")
-	if err != nil {
-		panic(err)
-	}
-
-	values := day01.ParseIntLines(string(data))
-	product := day01.ERProduct3(values)
-	fmt.Println(product)
-
+	day01f(day01.ERProduct3)
 }
 
 func day02a() {
