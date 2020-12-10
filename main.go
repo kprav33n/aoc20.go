@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -15,9 +16,33 @@ import (
 	"github.com/kprav33n/aoc20/functools"
 )
 
+// readStdinOrFile reads from stdin if it is not empty. Else, it reads from the
+// given file. In either case, it returns the entire data read, and error if
+// any.
+func readStdinOrFile(f string) ([]byte, error) {
+	stat, err := os.Stdin.Stat()
+	if err != nil {
+		panic(err)
+	}
+
+	var reader io.ReadCloser
+	if stat.Size() > 0 {
+		reader = os.Stdin
+	} else {
+		var err error
+		reader, err = os.Open(f)
+		if err != nil {
+			panic(err)
+		}
+	}
+	defer reader.Close()
+
+	return ioutil.ReadAll(reader)
+}
+
 func day01f(product interface{}) {
 	functools.Compose(
-		ioutil.ReadFile,
+		readStdinOrFile,
 		functools.Unwrap,
 		func(b []byte) string {
 			return string(b)
