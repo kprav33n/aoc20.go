@@ -5,6 +5,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"reflect"
 	"strings"
 
 	"github.com/kprav33n/aoc20/day01"
@@ -40,7 +41,9 @@ func readStdinOrFile(f string) ([]byte, error) {
 	return ioutil.ReadAll(reader)
 }
 
-func day01f(product interface{}) {
+type runner struct{}
+
+func (_ *runner) day01f(product interface{}) {
 	functools.Compose(
 		readStdinOrFile,
 		functools.Unwrap,
@@ -53,15 +56,15 @@ func day01f(product interface{}) {
 	)("input/day01.txt")
 }
 
-func day01a() {
-	day01f(day01.ERProduct)
+func (r *runner) Day01a() {
+	r.day01f(day01.ERProduct)
 }
 
-func day01b() {
-	day01f(day01.ERProduct3)
+func (r *runner) Day01b() {
+	r.day01f(day01.ERProduct3)
 }
 
-func day02a() {
+func (_ *runner) Day02a() {
 	data, err := ioutil.ReadFile("input/day02.txt")
 	if err != nil {
 		panic(err)
@@ -72,7 +75,7 @@ func day02a() {
 	fmt.Println(count)
 }
 
-func day02b() {
+func (_ *runner) Day02b() {
 	data, err := ioutil.ReadFile("input/day02.txt")
 	if err != nil {
 		panic(err)
@@ -83,7 +86,7 @@ func day02b() {
 	fmt.Println(count)
 }
 
-func day03a() {
+func (_ *runner) Day03a() {
 	data, err := ioutil.ReadFile("input/day03.txt")
 	if err != nil {
 		panic(err)
@@ -98,7 +101,7 @@ func day03a() {
 	fmt.Println(count)
 }
 
-func day03b() {
+func (_ *runner) Day03b() {
 	data, err := ioutil.ReadFile("input/day03.txt")
 	if err != nil {
 		panic(err)
@@ -117,7 +120,7 @@ func day03b() {
 	fmt.Println(count)
 }
 
-func day04a() {
+func (_ *runner) Day04a() {
 	data, err := ioutil.ReadFile("input/day04.txt")
 	if err != nil {
 		panic(err)
@@ -132,7 +135,7 @@ func day04a() {
 	fmt.Println(count)
 }
 
-func day05a() {
+func (_ *runner) Day05a() {
 	data, err := ioutil.ReadFile("input/day05.txt")
 	if err != nil {
 		panic(err)
@@ -151,7 +154,7 @@ func day05a() {
 	fmt.Println(max)
 }
 
-func day06a() {
+func (_ *runner) Day06a() {
 	data, err := ioutil.ReadFile("input/day06.txt")
 	if err != nil {
 		panic(err)
@@ -174,32 +177,20 @@ func main() {
 		os.Exit(1)
 	}
 
-	switch os.Args[1] {
-	case "day01a":
-		day01a()
-
-	case "day01b":
-		day01b()
-
-	case "day02a":
-		day02a()
-
-	case "day02b":
-		day02b()
-
-	case "day03a":
-		day03a()
-
-	case "day03b":
-		day03b()
-
-	case "day04a":
-		day04a()
-
-	case "day05a":
-		day05a()
-
-	case "day06a":
-		day06a()
+	var r runner
+	f := reflect.ValueOf(&r).MethodByName(strings.Title(os.Args[1]))
+	if !f.IsValid() {
+		fmt.Fprintf(os.Stderr, "Unknown puzzle: %s\n", os.Args[1])
+		fmt.Fprintf(os.Stderr, "Solutions available for: ")
+		t := reflect.TypeOf(&r)
+		for i := 0; i < t.NumMethod(); i++ {
+			if strings.HasPrefix(t.Method(i).Name, "Day") {
+				fmt.Fprintf(os.Stderr, "%s ", strings.ToLower(t.Method(i).Name))
+			}
+		}
+		fmt.Fprintf(os.Stderr, "\n")
+		os.Exit(2)
 	}
+
+	f.Call(nil)
 }
