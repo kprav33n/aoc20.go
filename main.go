@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io"
 	"io/ioutil"
 	"os"
 	"reflect"
@@ -15,37 +14,14 @@ import (
 	"github.com/kprav33n/aoc20/day05"
 	"github.com/kprav33n/aoc20/day06"
 	"github.com/kprav33n/aoc20/functools"
+	"github.com/kprav33n/aoc20/iotools"
 )
-
-// readStdinOrFile reads from stdin if it is not empty. Else, it reads from the
-// given file. In either case, it returns the entire data read, and error if
-// any.
-func readStdinOrFile(f string) ([]byte, error) {
-	stat, err := os.Stdin.Stat()
-	if err != nil {
-		panic(err)
-	}
-
-	var reader io.ReadCloser
-	if stat.Size() > 0 {
-		reader = os.Stdin
-	} else {
-		var err error
-		reader, err = os.Open(f)
-		if err != nil {
-			panic(err)
-		}
-	}
-	defer reader.Close()
-
-	return ioutil.ReadAll(reader)
-}
 
 type runner struct{}
 
 func (_ *runner) day01f(product interface{}) {
 	functools.Compose(
-		readStdinOrFile,
+		iotools.ReadStdinOrFile,
 		functools.Unwrap,
 		func(b []byte) string {
 			return string(b)
