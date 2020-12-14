@@ -17,136 +17,6 @@ import (
 	"github.com/kprav33n/aoc20/iotools"
 )
 
-type runner struct{}
-
-func (_ *runner) day01f(product interface{}) {
-	functools.Compose(
-		iotools.ReadStdinOrFile,
-		functools.Unwrap,
-		func(b []byte) string {
-			return string(b)
-		},
-		day01.ParseIntLines,
-		product,
-		fmt.Println,
-	)("input/day01.txt")
-}
-
-func (r *runner) Day01a() {
-	r.day01f(day01.ERProduct)
-}
-
-func (r *runner) Day01b() {
-	r.day01f(day01.ERProduct3)
-}
-
-func (_ *runner) Day02a() {
-	data, err := ioutil.ReadFile("input/day02.txt")
-	if err != nil {
-		panic(err)
-	}
-
-	entries := day02.ParseLines(string(data))
-	count := day02.Count(day02.IsValid, entries)
-	fmt.Println(count)
-}
-
-func (_ *runner) Day02b() {
-	data, err := ioutil.ReadFile("input/day02.txt")
-	if err != nil {
-		panic(err)
-	}
-
-	entries := day02.ParseLines(string(data))
-	count := day02.Count(day02.IsValid2, entries)
-	fmt.Println(count)
-}
-
-func (_ *runner) Day03a() {
-	data, err := ioutil.ReadFile("input/day03.txt")
-	if err != nil {
-		panic(err)
-	}
-
-	m, err := day03.ParseMap(string(data))
-	if err != nil {
-		panic(err)
-	}
-
-	count := day03.CountTrees(day03.Slope{3, 1}, m)
-	fmt.Println(count)
-}
-
-func (_ *runner) Day03b() {
-	data, err := ioutil.ReadFile("input/day03.txt")
-	if err != nil {
-		panic(err)
-	}
-
-	m, err := day03.ParseMap(string(data))
-	if err != nil {
-		panic(err)
-	}
-
-	count := day03.CountTrees(day03.Slope{1, 1}, m) *
-		day03.CountTrees(day03.Slope{3, 1}, m) *
-		day03.CountTrees(day03.Slope{5, 1}, m) *
-		day03.CountTrees(day03.Slope{7, 1}, m) *
-		day03.CountTrees(day03.Slope{1, 2}, m)
-	fmt.Println(count)
-}
-
-func (_ *runner) Day04a() {
-	data, err := ioutil.ReadFile("input/day04.txt")
-	if err != nil {
-		panic(err)
-	}
-
-	passports, err := day04.ParsePassports(string(data))
-	if err != nil {
-		panic(err)
-	}
-
-	count := day04.CountValid(passports)
-	fmt.Println(count)
-}
-
-func (_ *runner) Day05a() {
-	data, err := ioutil.ReadFile("input/day05.txt")
-	if err != nil {
-		panic(err)
-	}
-
-	passes := strings.Split(strings.Trim(string(data), "\n"), "\n")
-	ids := day05.ParsePasses(passes)
-
-	max := 0
-	for _, i := range ids {
-		if i > max {
-			max = i
-		}
-	}
-
-	fmt.Println(max)
-}
-
-func (_ *runner) Day06a() {
-	data, err := ioutil.ReadFile("input/day06.txt")
-	if err != nil {
-		panic(err)
-	}
-
-	groups := strings.Split(strings.Trim(string(data), "\n"), "\n\n")
-	counts := day06.ParseAnswers(groups)
-
-	sum := 0
-	for _, c := range counts {
-		sum += c
-	}
-
-	fmt.Println(sum)
-}
-
 func main() {
 	if len(os.Args) != 2 {
 		fmt.Fprintf(os.Stderr, "Usage: %s <dayNNx>\n", os.Args[0])
@@ -169,4 +39,134 @@ func main() {
 	}
 
 	f.Call(nil)
+}
+
+type runner struct{}
+
+func (_ *runner) day01(product interface{}) {
+	functools.Compose(
+		iotools.ReadStdinOrFile,
+		functools.Unwrap,
+		bytesToString,
+		day01.ParseIntLines,
+		product,
+		fmt.Println,
+	)("input/day01.txt")
+}
+
+func (r *runner) Day01a() {
+	r.day01(day01.ERProduct)
+}
+
+func (r *runner) Day01b() {
+	r.day01(day01.ERProduct3)
+}
+
+func (r *runner) day02(pred func(day02.Entry) bool) {
+	functools.Compose(
+		iotools.ReadStdinOrFile,
+		functools.Unwrap,
+		bytesToString,
+		day02.ParseLines,
+		func(es []day02.Entry) int {
+			return day02.Count(pred, es)
+		},
+		fmt.Println,
+	)("input/day02.txt")
+}
+
+func (r *runner) Day02a() {
+	r.day02(day02.IsValid)
+}
+
+func (r *runner) Day02b() {
+	r.day02(day02.IsValid2)
+}
+
+func (_ *runner) day03(cf func([][]byte) int) {
+	functools.Compose(
+		iotools.ReadStdinOrFile,
+		functools.Unwrap,
+		bytesToString,
+		day03.ParseMap,
+		functools.Unwrap,
+		cf,
+		fmt.Println,
+	)("input/day03.txt")
+}
+
+func (r *runner) Day03a() {
+	r.day03(func(m [][]byte) int {
+		return day03.CountTrees(day03.Slope{Right: 3, Down: 1}, m)
+	})
+}
+
+func (r *runner) Day03b() {
+	r.day03(func(m [][]byte) int {
+		return day03.CountTrees(day03.Slope{Right: 1, Down: 1}, m) *
+			day03.CountTrees(day03.Slope{Right: 3, Down: 1}, m) *
+			day03.CountTrees(day03.Slope{Right: 5, Down: 1}, m) *
+			day03.CountTrees(day03.Slope{Right: 7, Down: 1}, m) *
+			day03.CountTrees(day03.Slope{Right: 1, Down: 2}, m)
+	})
+}
+
+func (_ *runner) Day04a() {
+	functools.Compose(
+		iotools.ReadStdinOrFile,
+		functools.Unwrap,
+		bytesToString,
+		day04.ParsePassports,
+		functools.Unwrap,
+		day04.CountValid,
+		fmt.Println,
+	)("input/day04.txt")
+}
+
+func (_ *runner) Day05a() {
+	functools.Compose(
+		iotools.ReadStdinOrFile,
+		functools.Unwrap,
+		bytesToString,
+		func(s string) []string {
+			return strings.Split(strings.Trim(s, "\n"), "\n")
+		},
+		day05.ParsePasses,
+		maxIntFromSlice,
+		fmt.Println,
+	)("input/day05.txt")
+}
+
+func (_ *runner) Day06a() {
+	data, err := ioutil.ReadFile("input/day06.txt")
+	if err != nil {
+		panic(err)
+	}
+
+	groups := strings.Split(strings.Trim(string(data), "\n"), "\n\n")
+	counts := day06.ParseAnswers(groups)
+
+	sum := 0
+	for _, c := range counts {
+		sum += c
+	}
+
+	fmt.Println(sum)
+}
+
+// Functions below this are shared between solutions. Extract them to a package
+// if apropriate.
+
+func bytesToString(b []byte) string {
+	return string(b)
+}
+
+func maxIntFromSlice(xs []int) int {
+	max := 0
+	for _, x := range xs {
+		if x > max {
+			max = x
+		}
+	}
+	return max
 }
