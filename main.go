@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"reflect"
 	"strings"
@@ -138,20 +137,17 @@ func (_ *runner) Day05a() {
 }
 
 func (_ *runner) Day06a() {
-	data, err := ioutil.ReadFile("input/day06.txt")
-	if err != nil {
-		panic(err)
-	}
-
-	groups := strings.Split(strings.Trim(string(data), "\n"), "\n\n")
-	counts := day06.ParseAnswers(groups)
-
-	sum := 0
-	for _, c := range counts {
-		sum += c
-	}
-
-	fmt.Println(sum)
+	functools.Compose(
+		iotools.ReadStdinOrFile,
+		functools.Unwrap,
+		bytesToString,
+		func(s string) []string {
+			return strings.Split(strings.Trim(s, "\n"), "\n\n")
+		},
+		day06.ParseAnswers,
+		sumIntInSlice,
+		fmt.Println,
+	)("input/day06.txt")
 }
 
 // Functions below this are shared between solutions. Extract them to a package
@@ -169,4 +165,12 @@ func maxIntFromSlice(xs []int) int {
 		}
 	}
 	return max
+}
+
+func sumIntInSlice(xs []int) int {
+	sum := 0
+	for _, x := range xs {
+		sum += x
+	}
+	return sum
 }
